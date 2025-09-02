@@ -22,14 +22,14 @@ def run_example():
             "description": "Get merged changes from openstack/barbican for the last day"
         },
         {
-            "name": "Nova Repository with 7 Days",
+            "name": "Nova Repository with Specific Date",
             "env": {
                 "OPENDEV_REPO_NAME": "openstack/nova",
-                "OPENDEV_AGE": "7d",
+                "OPENDEV_AFTER": "2025-01-20",
                 "OPENDEV_DRY_RUN": "true",
                 "OPENDEV_LOG": "true"
             },
-            "description": "Get merged changes from openstack/nova for the last 7 days"
+            "description": "Get merged changes from openstack/nova since January 20th, 2025"
         },
         {
             "name": "Open Changes Since January 1st",

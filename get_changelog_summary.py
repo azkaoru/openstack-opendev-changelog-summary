@@ -8,8 +8,7 @@ via Gerrit REST API and outputs the changes data as JSON.
 Environment Variables:
 - OPENDEV_REPO_NAME: Repository name (default: openstack/barbican)
 - OPENDEV_STATUS: Status filter (default: merged)
-- OPENDEV_AFTER: After date in YYYY-MM-DD format (default: calculated from age)
-- OPENDEV_AGE: Age filter (default: 1d) - converted to after date
+- OPENDEV_AFTER: After date in YYYY-MM-DD format (default: yesterday's date)
 - OPENDEV_DRY_RUN: If set to 'true', only show query without making API calls
 - OPENDEV_LOG: If set to 'true', show debug and info messages (default: false)
 """
@@ -20,7 +19,6 @@ import urllib.parse
 import os
 import sys
 from datetime import datetime, timedelta
-import re
 
 def log_message(message, file=sys.stderr):
     """
@@ -33,39 +31,14 @@ def log_message(message, file=sys.stderr):
     if os.getenv('OPENDEV_LOG', '').lower() == 'true':
         print(message, file=file)
 
-def parse_age_to_date(age_str):
+def get_default_after_date():
     """
-    Parse age string (like '1d', '7d', '30d') to a date string in YYYY-MM-DD format.
+    Get default after date (yesterday) in YYYY-MM-DD format.
     
-    Args:
-        age_str (str): Age string like '1d', '7d', '30d'
-        
     Returns:
         str: Date string in YYYY-MM-DD format
     """
-    if not age_str:
-        age_str = '1d'
-    
-    # Parse the age string using regex
-    match = re.match(r'^(\d+)([dhm])$', age_str.lower())
-    if not match:
-        # If parsing fails, default to 1 day
-        days = 1
-    else:
-        number = int(match.group(1))
-        unit = match.group(2)
-        
-        if unit == 'd':
-            days = number
-        elif unit == 'h':
-            days = max(1, number // 24)  # Convert hours to days, minimum 1 day
-        elif unit == 'm':
-            days = max(1, number // (24 * 60))  # Convert minutes to days, minimum 1 day
-        else:
-            days = 1
-    
-    # Calculate the date
-    target_date = datetime.now() - timedelta(days=days)
+    target_date = datetime.now() - timedelta(days=1)
     return target_date.strftime('%Y-%m-%d')
 
 def get_changelog_summary():
@@ -77,16 +50,15 @@ def get_changelog_summary():
     repo_name = os.getenv('OPENDEV_REPO_NAME', 'openstack/barbican')
     status = os.getenv('OPENDEV_STATUS', 'merged')
     after = os.getenv('OPENDEV_AFTER')
-    age = os.getenv('OPENDEV_AGE', '1d')
     dry_run = os.getenv('OPENDEV_DRY_RUN', '').lower() == 'true'
     
-    # afterが指定されていない場合は、ageから変換
+    # afterが指定されていない場合は、デフォルトで昨日の日付を使用
     if not after:
-        after = parse_age_to_date(age)
+        after = get_default_after_date()
     
     gerrit_url = 'https://review.opendev.org'
     
-    # 検索クエリを構築 (mergedafter -> after に変更)
+    # 検索クエリを構築
     query = f'status:{status} repo:{repo_name} after:{after}'
     
     log_message(f"Searching for changes: {query}")

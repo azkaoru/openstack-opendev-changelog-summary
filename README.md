@@ -22,8 +22,7 @@ python3 get_changelog_summary.py
 
 - `OPENDEV_REPO_NAME`: 対象リポジトリ（デフォルト: `openstack/barbican`）
 - `OPENDEV_STATUS`: ステータスフィルター（デフォルト: `merged`）
-- `OPENDEV_AFTER`: 日付の下限をYYYY-MM-DD形式で指定（デフォルト: ageから計算）
-- `OPENDEV_AGE`: 期間フィルター（デフォルト: `1d`）- after日付に変換されます
+- `OPENDEV_AFTER`: 日付の下限をYYYY-MM-DD形式で指定（デフォルト: 昨日の日付）
 - `OPENDEV_DRY_RUN`: `true`に設定するとAPIコールを行わずクエリのみ表示
 - `OPENDEV_LOG`: `true`に設定するとデバッグ情報とログメッセージを表示（デフォルト: `false`）
 
@@ -36,8 +35,8 @@ python3 get_changelog_summary.py
 # 異なるリポジトリを指定
 OPENDEV_REPO_NAME=openstack/nova python3 get_changelog_summary.py
 
-# 過去7日間のオープンな変更を取得
-OPENDEV_STATUS=open OPENDEV_AGE=7d python3 get_changelog_summary.py
+# 過去のオープンな変更を取得
+OPENDEV_STATUS=open OPENDEV_AFTER=2025-01-20 python3 get_changelog_summary.py
 
 # 特定の日付以降のマージ済み変更を取得
 OPENDEV_AFTER=2025-01-01 python3 get_changelog_summary.py
@@ -49,7 +48,7 @@ OPENDEV_DRY_RUN=true python3 get_changelog_summary.py
 OPENDEV_LOG=true python3 get_changelog_summary.py
 
 # 複数の設定を組み合わせ
-OPENDEV_REPO_NAME=openstack/keystone OPENDEV_STATUS=merged OPENDEV_AGE=3d python3 get_changelog_summary.py
+OPENDEV_REPO_NAME=openstack/keystone OPENDEV_STATUS=merged OPENDEV_AFTER=2025-01-15 python3 get_changelog_summary.py
 ```
 
 ## 出力形式
@@ -58,11 +57,11 @@ OPENDEV_REPO_NAME=openstack/keystone OPENDEV_STATUS=merged OPENDEV_AGE=3d python
 
 ```json
 {
-  "query": "status:merged repo:openstack/barbican after:2025-08-29",
+  "query": "status:merged repo:openstack/barbican after:2025-01-29",
   "count": 2,
   "repository": "openstack/barbican",
   "status": "merged",
-  "after": "2025-08-29",
+  "after": "2025-01-29",
   "timestamp": "2024-01-01T12:00:00.000000",
   "changes": [
     {

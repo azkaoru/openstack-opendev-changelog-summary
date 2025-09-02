@@ -14,9 +14,9 @@ echo "Test 2: Different repository (Nova, dry run)"
 OPENDEV_REPO_NAME=openstack/nova OPENDEV_DRY_RUN=true OPENDEV_LOG=true python3 get_changelog_summary.py
 echo
 
-# Test 3: Different time range (dry run)
-echo "Test 3: 7 days ago (dry run)"
-OPENDEV_AGE=7d OPENDEV_DRY_RUN=true OPENDEV_LOG=true python3 get_changelog_summary.py
+# Test 3: Different date (dry run)
+echo "Test 3: Specific date (dry run)"
+OPENDEV_AFTER=2025-01-20 OPENDEV_DRY_RUN=true OPENDEV_LOG=true python3 get_changelog_summary.py
 echo
 
 # Test 4: Open status (dry run)
@@ -25,7 +25,7 @@ OPENDEV_STATUS=open OPENDEV_DRY_RUN=true OPENDEV_LOG=true python3 get_changelog_
 echo
 
 # Test 5: Specific date (dry run)
-echo "Test 5: Specific date (dry run)"
+echo "Test 5: Earlier date (dry run)"
 OPENDEV_AFTER=2025-01-01 OPENDEV_DRY_RUN=true OPENDEV_LOG=true python3 get_changelog_summary.py
 echo
 
